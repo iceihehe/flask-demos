@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 
 def config_mysql(uri="", **kwargs):
 
-    engine = create_engine(uri, **kwargs)
+    engine = create_engine(uri, echo=True, **kwargs)
     session = sessionmaker(bind=engine)
     base = declarative_base(bind=engine)
 
