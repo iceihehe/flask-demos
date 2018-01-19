@@ -1,5 +1,5 @@
 # -*- coding = utf-8 -*-
-from sqlalchemy import Column, Integer, String, Float, DateTime, TEXT
+from sqlalchemy import Column, Integer, String, Float, DateTime, TEXT, PrimaryKeyConstraint
 
 from app.blueprint.tyfo.database import Base
 
@@ -23,7 +23,7 @@ class SingleUserProfile(Base):
     is_member = Column(Integer)
     mb_province = Column(Integer)
     mb_city = Column(Integer)
-    mb_country = Column(Integer)
+    mb_county = Column(Integer)
     mb_followgoodsnum = Column(Integer)
     mb_followshopsnum = Column(Integer)
     mb_trolleygoodsnum = Column(Integer)
@@ -37,7 +37,7 @@ class SingleUserProfile(Base):
     mb_returnnum = Column(Integer)
     mb_moneysum = Column(Float)
     mb_avg = Column(Float)
-    mb_lastyear_avg = Column(Float)
+    # mb_lastyear_avg = Column(Float)
     mb_discountnum = Column(Integer)
     mb_freelogisticnum = Column(Integer)
     mb_ordernum = Column(Integer)
@@ -47,7 +47,7 @@ class SingleUserProfile(Base):
     mb_cp_moneynum = Column(Float)
     label_ids = Column(String(1024))
     statistic_time = Column(DateTime)
-    mb_ordermoneysum = Column(Float)
+    # mb_ordermoneysum = Column(Float)
 
 
 class Categorynum(Base):
@@ -100,13 +100,16 @@ class MbCategorynumEx(Base):
 
     __tablename__ = "mb_categorynum_ex"
 
-    mb_id = Column(Integer, primary_key=True)
+    mb_id = Column(Integer)
     category_id = Column(Integer)
     category_name = Column(String(1024))
     category_ordernum = Column(Integer)
-    category_ordernum = Column(Integer)
     category_moneysum = Column(Float)
     category_date = Column(Integer)
+
+    __table_args__ = (
+        PrimaryKeyConstraint("mb_id", "category_id", "category_date", name="pk"),
+    )
 
 
 class MbCfnum(Base):
@@ -126,9 +129,13 @@ class MbLabel(Base):
 
     __tablename__ = "mb_label"
 
-    mb_id = Column(Integer, primary_key=True)
+    mb_id = Column(Integer)
     labelid = Column(Integer)
     label_date = Column(Integer)
+
+    __table_args__ = (
+        PrimaryKeyConstraint("mb_id", "labelid", name="pk"),
+    )
 
 
 class MbWordCloud(Base):
