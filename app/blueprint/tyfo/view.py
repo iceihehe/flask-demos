@@ -80,7 +80,7 @@ class FilterUserView(Resource):
         if discount_sum_lower > -maxsize:
             expression.append(SingleUserProfile.mb_discountnum > discount_sum_lower)
 
-        if sex:
+        if sex is not None:
             expression.append(SingleUserProfile.mb_sex == sex)
 
         if is_vip:
@@ -143,7 +143,7 @@ class FilterUserView(Resource):
         total = users.count()
 
         start = (page - 1) * count
-        users = users.slice(start, start + count).all()
+        users = users.slice(start, start + count)
 
         def detail(user):
             """
@@ -152,12 +152,20 @@ class FilterUserView(Resource):
             """
 
             return {
-                "mbId": user.mb_id,
-                "mbName": user.mb_name,
-                "mbOrdernum": user.mb_ordernum,
+                "isVIP": 1 if user.is_member == 1 else 0,
+                "lastLogin": -1 if user.mb_lastlogin in [-999, 0] else user.mb_lastlogin*1000,
+                "mobile": "" if user.mb_mobile in [-999, "-999"] else user.mb_mobile,
+                "registerTime": -1 if user.mb_regdate in [-999, 0] else user.mb_regdate*1000,
+                "userId": user.mb_id,
+                "username": user.mb_petname,
+                "account": user.sa_id,
+                "loginName": user.mb_loginname
             }
 
         return {
-            "total": total,
-            "userList": [detail(i) for i in users]
-        }
+            "data": {
+                "total": total,
+                "userList": [detail(i) for i in users]
+                },
+            "code": 10000
+            }
